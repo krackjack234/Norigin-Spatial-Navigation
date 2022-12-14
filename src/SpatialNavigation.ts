@@ -676,7 +676,7 @@ class SpatialNavigationService {
       this.keyUpEventListener = (event: KeyboardEvent) => {
         const eventType = this.getEventType(event.keyCode);
 
-        delete this.pressedKeys[eventType];
+        Reflect.deleteProperty(this.pressedKeys, eventType);
 
         if (this.throttle && !this.throttleKeypresses) {
           this.keyDownEventListenerThrottled.cancel();
@@ -1141,7 +1141,7 @@ class SpatialNavigationService {
     if (componentToRemove) {
       const { parentFocusKey } = componentToRemove;
 
-      delete this.focusableComponents[focusKey];
+      Reflect.deleteProperty(this.focusableComponents, focusKey);
 
       const parentComponent = this.focusableComponents[parentFocusKey];
       const isFocused = focusKey === this.focusKey;
