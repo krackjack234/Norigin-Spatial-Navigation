@@ -63,22 +63,17 @@ const assets = [
   {
     title: 'Asset 5',
     color: '#AB8DFF'
-  },
+  }
+];
+
+const assets2 = [
   {
-    title: 'Asset 6',
-    color: '#512EB0'
-  },
-  {
-    title: 'Asset 7',
+    title: 'Asset 1',
     color: '#714ADD'
   },
   {
-    title: 'Asset 8',
+    title: 'Asset 2',
     color: '#AB8DFF'
-  },
-  {
-    title: 'Asset 9',
-    color: '#512EB0'
   }
 ];
 
@@ -262,6 +257,7 @@ const ContentRowScrollingContent = styled.div`
 
 interface ContentRowProps {
   title: string;
+  index: number;
   onAssetPress: (props: object, details: KeyPressDetails) => void;
   onFocus: (
     layout: FocusableComponentLayout,
@@ -272,11 +268,13 @@ interface ContentRowProps {
 
 function ContentRow({
   title: rowTitle,
+  index,
   onAssetPress,
   onFocus
 }: ContentRowProps) {
   const { ref, focusKey } = useFocusable({
-    onFocus
+    onFocus,
+    focusable: false
   });
 
   const scrollingRef = useRef(null);
@@ -292,12 +290,13 @@ function ContentRow({
   );
 
   return (
-    <FocusContext.Provider value={focusKey}>
-      <ContentRowWrapper ref={ref}>
-        <ContentRowTitle>{rowTitle}</ContentRowTitle>
-        <ContentRowScrollingWrapper ref={scrollingRef}>
-          <ContentRowScrollingContent>
-            {assets.map(({ title, color }) => (
+   
+    <ContentRowWrapper ref={ref}>
+      <ContentRowTitle>{rowTitle}</ContentRowTitle>
+      <ContentRowScrollingWrapper ref={scrollingRef}>
+        <ContentRowScrollingContent>
+          {index % 2 === 0 ?
+            assets.map(({ title, color }) => (
               <Asset
                 key={title}
                 title={title}
@@ -305,11 +304,21 @@ function ContentRow({
                 onEnterPress={onAssetPress}
                 onFocus={onAssetFocus}
               />
-            ))}
-          </ContentRowScrollingContent>
-        </ContentRowScrollingWrapper>
-      </ContentRowWrapper>
-    </FocusContext.Provider>
+            )) :
+            assets2.map(({ title, color }) => (
+              <Asset
+                key={title}
+                title={title}
+                color={color}
+                onEnterPress={onAssetPress}
+                onFocus={onAssetFocus}
+              />
+            ))
+          }
+        </ContentRowScrollingContent>
+      </ContentRowScrollingWrapper>
+    </ContentRowWrapper>
+   
   );
 }
 
@@ -385,22 +394,14 @@ function Content() {
     <FocusContext.Provider value={focusKey}>
       <ContentWrapper>
         <ContentTitle>Norigin Spatial Navigation</ContentTitle>
-        <SelectedItemWrapper>
-          <SelectedItemBox
-            color={selectedAsset ? selectedAsset.color : '#565b6b'}
-          />
-          <SelectedItemTitle>
-            {selectedAsset
-              ? selectedAsset.title
-              : 'Press "Enter" to select an asset'}
-          </SelectedItemTitle>
-        </SelectedItemWrapper>
+       
         <ScrollingRows ref={ref}>
           <div>
-            {rows.map(({ title }) => (
+            {rows.map(({ title }, index) => (
               <ContentRow
                 key={title}
                 title={title}
+                index={index}
                 onAssetPress={onAssetPress}
                 onFocus={onRowFocus}
               />
